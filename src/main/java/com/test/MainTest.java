@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
+import static org.hamcrest.Matchers.equalTo;
 
 import static io.restassured.RestAssured.given;
 
@@ -18,7 +19,7 @@ public class MainTest {
     public void verifyStatusCode() {
 
         // Base URL of the API
-        RestAssured.baseURI = "http://localhost:8082/books";
+        RestAssured.baseURI = "http://localhost:8085/books";
 
         // Username and password for Basic Authentication
         String username = "user"; // Replace with the correct username
@@ -46,6 +47,5 @@ public class MainTest {
         // Validate status line
         validatableResponse.statusLine("HTTP/1.1 200 ");
     }
-
-
+    
 }

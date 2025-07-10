@@ -4,6 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+
+import static org.hamcrest.Matchers.*;
+
+import java.util.List;
+
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -18,7 +23,7 @@ public class MainTest {
     public void verifyStatusCode() {
 
         // Base URL of the API
-        RestAssured.baseURI = "http://localhost:8082/books";
+        RestAssured.baseURI = "http://localhost:8085/books";
 
         // Username and password for Basic Authentication
         String username = "user"; // Replace with the correct username
@@ -46,6 +51,22 @@ public class MainTest {
         // Validate status line
         validatableResponse.statusLine("HTTP/1.1 200 ");
     }
+    @Test
+    public void testGetBooks() {
+        Response response = given()
+                                .auth().basic("user", "password")
+                                .contentType("application/json")
+                            .when()
+                                .get("http://localhost:8085/books")
+                            .then()
+                                .statusCode(200)
+                                .extract().response();
+        // Optionally, validate the first book's details
+        response.then() .body("[1].name", equalTo("The Life-Changing Magic of Tidying Up"))
+        .body("[1].author", equalTo("Marie Kondo"));
+    }
+
+    
 
 
 }
