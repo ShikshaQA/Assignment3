@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 
 @Test
-public class MainTest {
+public class MainTest_Shiksha {
 
     RequestSpecification requestSpecification;
     Response response;
