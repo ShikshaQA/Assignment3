@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
 
 @Test
-public class MainTest {
+public class TestCase {
 
     RequestSpecification requestSpecification;
     Response response;
