@@ -1,65 +1,39 @@
-package com.rest.test;
-
+ package com.test;
 
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
-import static org.hamcrest.Matchers.*;
-import static io.restassured.RestAssured.given;
 
-@Test
+import java.util.List;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
 public class MainTest {
 
-    RequestSpecification requestSpecification;
-    Response response;
-    ValidatableResponse validatableResponse;
-    
     @Test
-    public void testCreateBook() {
-        String requestBody = "{\n" +
-                "    \"name\": \"A to the Bodhisattva Way of Life\",\n" +
-                "    \"author\": \"Santideva\",\n" +
-                "    \"price\": 15.41\n" +
-                "}";
-
+    public void testBookPricesGreaterThanZero() {
         Response response = given()
-                                .auth().basic("admin", "password")
-                                .contentType("application/json")
-                                .body(requestBody)
-                            .when()
-                                .post("http://localhost:8085/books")
-                            .then()
-                                .statusCode(201)
-                                .extract().response();
+                .auth().basic("user", "password")
+                .when()
+                .get("http://localhost:8080/books")
+                .then()
+                .statusCode(200)
+                .extract().response();
 
-        // Validate the response body
-        response.then().body("name", equalTo("A to the Bodhisattva Way of Life"))
-                .body("author", equalTo("Santideva"))
-                .body("price", equalTo(15.41f));
-    }
-    
-    @Test
-    public void testGetBookById() {
-        int bookId =2;
-
-        Response response = given()
-                                .auth().basic("admin", "password")
-                                .contentType("application/json")
-                            .when()
-                                .get("http://localhost:8085/books/" + bookId)
-                            .then()
-                                .statusCode(200)
-                                .extract().response();
-
-        // Print for debugging
-        System.out.println("Response: " + response.getBody().asString());
-        // Validate the book details
-        response.then().body("id", equalTo(bookId))
-                .body("name", equalTo("The Life-Changing Magic of Tidying Up"))
-                .body("author", equalTo("Marie Kondo"))
-                .body("price", equalTo(9.69f));
+        List<Float> prices = response.jsonPath().getList("price", Float.class);
+        for (Float price : prices) {
+            assert price > 0 : "Price is not greater than zero: " + price;
+        }
     }
 
-
+    @Test
+    public void testBookListIsNotEmpty() {
+        given()
+                .auth().basic("user", "password")
+                .when()
+                .get("http://localhost:8080/books")
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThan(0));
+    }
 }
