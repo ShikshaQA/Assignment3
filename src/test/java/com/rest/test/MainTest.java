@@ -15,7 +15,7 @@ public class MainTest {
         Response response = given()
                 .auth().basic("user", "password")
                 .when()
-                .get("http://localhost:8080/books")
+                .get("http://localhost:8085/books")
                 .then()
                 .statusCode(200)
                 .extract().response();
@@ -31,7 +31,7 @@ public class MainTest {
         given()
                 .auth().basic("user", "password")
                 .when()
-                .get("http://localhost:8080/books")
+                .get("http://localhost:8085/books")
                 .then()
                 .statusCode(200)
                 .body("size()", greaterThan(0));
